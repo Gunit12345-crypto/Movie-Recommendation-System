@@ -1,46 +1,45 @@
 import streamlit as st
-import pickle
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-# PAGE CONFIG
-st.set_page_config(
-    page_title="Movie Recommendation System",
-    page_icon="🎬",
-    layout="centered"
-)
+movies = pd.read_csv("tmdb_5000_movies.csv")
 
-# LOAD FILES
-movies = pickle.load(open('movies.pkl', 'rb'))
-model = pickle.load(open('model.pkl', 'rb'))
-vectors = pickle.load(open('vectors.pkl', 'rb'))
+movies = movies[['title', 'overview']]
+movies.dropna(inplace=True)
 
-# RECOMMEND FUNCTION
+cv = CountVectorizer(max_features=5000, stop_words='english')
+
+vectors = cv.fit_transform(movies['overview']).toarray()
+
+similarity = cosine_similarity(vectors)
+
 def recommend(movie):
+    index = movies[movies['title'] == movie].index[0]
 
-    movie_index = movies[movies['title'] == movie].index[0]
+    distances = similarity[index]
 
-    distances, indices = model.kneighbors(
-        [vectors[movie_index]],
-        n_neighbors=6
-    )
+    movie_list = sorted(
+        list(enumerate(distances)),
+        reverse=True,
+        key=lambda x: x[1]
+    )[1:6]
 
     recommended_movies = []
 
-    for i in indices[0][1:]:
-        recommended_movies.append(movies.iloc[i].title)
+    for i in movie_list:
+        recommended_movies.append(movies.iloc[i[0]].title)
 
     return recommended_movies
 
-# UI
 st.title("🎬 Movie Recommendation System")
 
-st.write("AI/ML based movie recommendation using NLP and KNN")
-
 selected_movie = st.selectbox(
-    "Select a movie",
+    "Select Movie",
     movies['title'].values
 )
 
-if st.button("Recommend Movies"):
+if st.button("Recommend"):
 
     recommendations = recommend(selected_movie)
 
