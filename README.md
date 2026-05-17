@@ -1,6 +1,6 @@
 # 🎬 Movie Recommendation System (ML)
 
-<<<<<<< HEAD
+
 ## 📌 Description
 This is a content-based movie recommendation system built using Machine Learning.  
 It recommends movies based on similarity of features like genres, cast, keywords, and overview.
@@ -30,7 +30,7 @@ It recommends movies based on similarity of features like genres, cast, keywords
 ### Step 1: Install libraries
 ```bash
 pip3 install pandas numpy scikit-learn
-=======
+
 ## Description
 This project recommends movies using Machine Learning.
 
@@ -46,5 +46,5 @@ python3 movie_recommender.py
 streamlit run app.py
 
 ## Status
-50% completed project
->>>>>>> 5ae153c (Added 50% ML Movie Recommendation System)
+100% completed project
+
